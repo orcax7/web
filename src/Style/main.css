@@ -1,0 +1,180 @@
+.defalut-btn {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #646cff;
+    color: white;
+    cursor: pointer;
+    transition: border-color 0.25s;
+}
+
+.defalut-btn:hover {
+    border-color: #ffffff;
+    color: white;
+}
+
+.defalut-btn:focus,
+.defalut-btn:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+}
+
+.tranparent-btn {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+    transition: border-color 0.25s;
+}
+
+.nav-logo {
+    width: 3rem;
+    height: auto;
+    background-color: white;
+    padding: 0.5rem;
+    border-radius: 5rem;
+}
+
+@media (prefers-color-scheme: light) {
+    .defalut-btn {
+        background-color: #f9f9f9;
+    }
+
+    .defalut-btn:hover {
+        border-color: red;
+    }
+}
+
+.tab-bg {
+    background-color: #1a1a1a;
+}
+
+.tab {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.2em 1em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    color: white;
+    background-color: #6f6f6f;
+    cursor: pointer;
+    transition: border-color 0.25s;
+    width: 100%;
+}
+
+.tab.active {
+    background-color: #d7d7d7;
+    color: black;
+}
+
+.tab:hover {
+    filter: brightness(1.1);
+}
+
+.w-100 {
+    width: 100px;
+}
+
+.icon-button {
+    padding-left: 4px;
+    padding-right: 4px;
+    border-radius: 5px;
+}
+
+.icon-button:hover {
+    background-color: lightgray;
+    transition: background-color 0.3s ease;
+}
+
+.text-black {
+    color: black;
+}
+
+.pull-left {
+    float: left;
+}
+
+.pull-right {
+    float: right;
+}
+
+.bg-dark-purple {
+    background-color: #060743;
+}
+
+.bg-light-white {
+    background-color: #ffffff6c;
+}
+
+.sidenav-custom a:hover {
+    background-color: #ffffff6c;
+}
+
+.h-90 {
+    height: 90vh;
+}
+
+.codeDisplay {
+    background-Color: #f5f5f5;
+    border-Radius: 5px;
+    color: black;
+    margin: 10px;
+    width: 100%;
+    overflow: auto;
+}
+
+.line-numbers-wrapper {
+    color: black;
+    font-size: 1em;
+    font-variant-ligatures: none;
+    left: 1.5rem;
+    line-height: 1.5;
+    /* padding-top: 1.5rem; */
+    position: absolute;
+    text-align: right;
+    top: 0;
+}
+
+.line-numbers-wrapper .line-number {
+    color: black;
+    display: inline-block;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    width: 1.2em;
+}
+
+pre[class*=language-].line-numbers-mode {
+    padding-left: calc(2.7rem + 2.4em);
+}
+
+.errorlist.active {
+    background-color: #6f6f6f;
+}
+
+.invisble-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.invisble-scrollbar {
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.clickable {
+    color: #646cff;
+    cursor: pointer;
+}
