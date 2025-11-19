@@ -190,7 +190,7 @@ const LandingPage = () => {
               <div className="recaptcha-container">
                 <ReCAPTCHA
                   ref={recaptchaRef}
-                  sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || "6LdpDw0sAAAAANWarKuYcws7UrQBg3kI6mnmbR8m"}
+                  sitekey={"6LdpDw0sAAAAANWarKuYcws7UrQBg3kI6mnmbR8m"}
                   onChange={onRecaptchaChange}
                 />
               </div>
