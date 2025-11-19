@@ -1,21 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 
-/**
- * CodeHighlighter Component
- * 
- * Integrates with Monaco Editor to highlight code changes from applied fixes:
- * - Highlights changed code sections
- * - Shows visual indicators for modified lines
- * - Provides diff-style highlighting for before/after comparisons
- * 
- * Requirements: 5.3
- */
-const CodeHighlighter = ({ 
-  editor, 
-  monaco, 
-  appliedFixes = [], 
-  originalCode = '', 
-  modifiedCode = '' 
+const CodeHighlighter = ({
+  editor,
+  monaco,
+  appliedFixes = [],
+  originalCode = '',
+  modifiedCode = ''
 }) => {
   const decorationsRef = useRef([]);
   const diffDecorationsRef = useRef([]);
@@ -75,11 +65,11 @@ const CodeHighlighter = ({
 
     // Simple line-by-line comparison
     const maxLines = Math.max(originalLines.length, modifiedLines.length);
-    
+
     for (let i = 0; i < maxLines; i++) {
       const originalLine = originalLines[i] || '';
       const modifiedLine = modifiedLines[i] || '';
-      
+
       if (originalLine !== modifiedLine) {
         // Line was modified
         decorations.push({
@@ -176,9 +166,9 @@ const CodeHighlighter = ({
         background-color: rgba(33, 150, 243, 0.2) !important;
       }
     `;
-    
+
     document.head.appendChild(style);
-    
+
     return () => {
       document.head.removeChild(style);
     };
@@ -221,7 +211,7 @@ const CodeHighlighter = ({
               }
             }
           };
-          
+
           const newDecorations = editor.deltaDecorations([], [decoration]);
           decorationsRef.current = [...decorationsRef.current, ...newDecorations];
         }

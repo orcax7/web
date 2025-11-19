@@ -1,8 +1,3 @@
-/**
- * @fileoverview Central registration point for all ESLint fixers
- * Import and register all available fixers here
- */
-
 import { fixerRegistry } from './fixerRegistry.js';
 
 // Import all fixer classes
@@ -19,14 +14,10 @@ import { PreferTemplateFixer } from '../preferTemplate.js';
 import { PreferForOfFixer } from '../preferForOf.js';
 import { NoTernaryFixer } from '../noTernary.js';
 
-/**
- * Register all available fixers with the registry
- * This function should be called once during application initialization
- */
 export function registerAllFixers() {
   try {
     console.log('Starting fixer registration...');
-    
+
     // Register all fixers
     fixerRegistry.register(new CommaDangleFixer());
     fixerRegistry.register(new IndentFixer());
@@ -45,7 +36,7 @@ export function registerAllFixers() {
     const registeredRules = fixerRegistry.getFixableRules();
     console.log('All fixers registered successfully. Total:', registeredRules.length);
     console.log('Registered rules:', registeredRules.join(', '));
-    
+
     return true;
   } catch (error) {
     console.error('Error registering fixers:', error);

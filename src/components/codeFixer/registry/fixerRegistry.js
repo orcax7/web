@@ -1,17 +1,4 @@
-/**
- * @fileoverview Fixer registry system for auto-discovery and management of ESLint fixers
- * Provides centralized registration and retrieval of all available fixers
- */
-
 import FixerBase from '../shared/fixerBase.js';
-
-/**
- * @typedef {Object} FixerInfo
- * @property {string} ruleId - The ESLint rule identifier
- * @property {'simple'|'complex'} complexity - Complexity level of the fixer
- * @property {string} modulePath - Path to the fixer module
- * @property {boolean} enabled - Whether the fixer is enabled
- */
 
 /**
  * Registry for managing ESLint fixers
@@ -21,13 +8,13 @@ class FixerRegistry {
   constructor() {
     /** @type {Map<string, FixerBase>} */
     this.fixers = new Map();
-    
+
     /** @type {Map<string, FixerInfo>} */
     this.fixerInfo = new Map();
-    
+
     /** @type {boolean} */
     this.initialized = false;
-    
+
     /** @type {string[]} */
     this.discoveryPaths = [
       '../simple/',
@@ -36,11 +23,6 @@ class FixerRegistry {
     ];
   }
 
-  /**
-   * Register a fixer instance
-   * @param {FixerBase} fixer - The fixer instance to register
-   * @throws {Error} If fixer is invalid or already registered
-   */
   register(fixer) {
     if (!(fixer instanceof FixerBase)) {
       throw new Error('Fixer must extend FixerBase class');
@@ -66,14 +48,9 @@ class FixerRegistry {
     console.log(`Registered fixer for rule: ${fixer.ruleId}`);
   }
 
-  /**
-   * Get a fixer for the specified rule
-   * @param {string} ruleId - The ESLint rule identifier
-   * @returns {FixerBase|null} The fixer instance or null if not found
-   */
   getFixer(ruleId) {
     const fixer = this.fixers.get(ruleId);
-    
+
     if (!fixer) {
       return null;
     }
@@ -86,10 +63,6 @@ class FixerRegistry {
     return fixer;
   }
 
-  /**
-   * Get all fixable rule IDs
-   * @returns {string[]} Array of rule IDs that have registered fixers
-   */
   getFixableRules() {
     return Array.from(this.fixers.keys()).filter(ruleId => {
       const info = this.fixerInfo.get(ruleId);
@@ -97,11 +70,6 @@ class FixerRegistry {
     });
   }
 
-  /**
-   * Check if a rule is fixable
-   * @param {string} ruleId - The ESLint rule identifier
-   * @returns {boolean} True if the rule has a registered and enabled fixer
-   */
   isFixable(ruleId) {
     const fixer = this.fixers.get(ruleId);
     if (!fixer) {
@@ -112,12 +80,6 @@ class FixerRegistry {
     return info && info.enabled;
   }
 
-  /**
-   * Enable or disable a fixer
-   * @param {string} ruleId - The ESLint rule identifier
-   * @param {boolean} enabled - Whether to enable the fixer
-   * @returns {boolean} True if the fixer was found and updated
-   */
   setFixerEnabled(ruleId, enabled) {
     const info = this.fixerInfo.get(ruleId);
     if (!info) {
@@ -129,18 +91,10 @@ class FixerRegistry {
     return true;
   }
 
-  /**
-   * Get information about all registered fixers
-   * @returns {FixerInfo[]} Array of fixer information objects
-   */
   getFixerInfo() {
     return Array.from(this.fixerInfo.values());
   }
 
-  /**
-   * Get statistics about registered fixers
-   * @returns {Object} Statistics object
-   */
   getStats() {
     const total = this.fixers.size;
     const enabled = Array.from(this.fixerInfo.values()).filter(info => info.enabled).length;
@@ -157,11 +111,6 @@ class FixerRegistry {
     };
   }
 
-  /**
-   * Auto-discover and register fixers from known directories
-   * This method would be enhanced in a real implementation to dynamically import modules
-   * For now, it provides the structure for manual registration
-   */
   async autoDiscoverFixers() {
     if (this.initialized) {
       console.log('Fixer registry already initialized');
@@ -174,7 +123,7 @@ class FixerRegistry {
       // In a real implementation, this would dynamically import all fixer modules
       // For now, we'll register the existing fixers manually
       await this.registerExistingFixers();
-      
+
       this.initialized = true;
       console.log(`Fixer discovery complete. Registered ${this.fixers.size} fixers.`);
     } catch (error) {
@@ -183,15 +132,10 @@ class FixerRegistry {
     }
   }
 
-  /**
-   * Register existing fixers that are already in the codebase
-   * This is a placeholder for the actual implementation
-   * @private
-   */
   async registerExistingFixers() {
     // This would be replaced with dynamic imports in a real implementation
     // For now, we'll create placeholder registrations for known rules
-    
+
     const knownRules = [
       'quotes',
       'semi',
@@ -215,13 +159,6 @@ class FixerRegistry {
     console.log(`Registered ${knownRules.length} existing fixers`);
   }
 
-  /**
-   * Manually register a fixer by rule ID and constructor
-   * Useful for testing and explicit registration
-   * @param {string} ruleId - The ESLint rule identifier
-   * @param {Function} FixerClass - The fixer class constructor
-   * @param {Object} [options] - Additional options
-   */
   registerFixer(ruleId, FixerClass, options = {}) {
     try {
       const fixer = new FixerClass(ruleId, options.complexity);
@@ -232,25 +169,17 @@ class FixerRegistry {
     }
   }
 
-  /**
-   * Unregister a fixer
-   * @param {string} ruleId - The ESLint rule identifier
-   * @returns {boolean} True if the fixer was found and removed
-   */
   unregister(ruleId) {
     const removed = this.fixers.delete(ruleId);
     this.fixerInfo.delete(ruleId);
-    
+
     if (removed) {
       console.log(`Unregistered fixer for rule: ${ruleId}`);
     }
-    
+
     return removed;
   }
 
-  /**
-   * Clear all registered fixers
-   */
   clear() {
     this.fixers.clear();
     this.fixerInfo.clear();
@@ -258,10 +187,6 @@ class FixerRegistry {
     console.log('Cleared all registered fixers');
   }
 
-  /**
-   * Validate all registered fixers
-   * @returns {Object} Validation results
-   */
   validateFixers() {
     const results = {
       valid: [],
@@ -274,11 +199,11 @@ class FixerRegistry {
         if (typeof fixer.canFix !== 'function') {
           throw new Error('Missing canFix method');
         }
-        
+
         if (typeof fixer.fix !== 'function') {
           throw new Error('Missing fix method');
         }
-        
+
         if (typeof fixer.validate !== 'function') {
           throw new Error('Missing validate method');
         }

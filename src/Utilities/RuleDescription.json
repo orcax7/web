@@ -5,8 +5,8 @@
         "description": "บังคับให้มีจำนวนสูงสุด (3) ของ Parameter ในการประกาศฟังก์ชัน",
         "message": "ฟังก์ชันที่มีจำนวน Parameter มากอาจทำให้ยากต่อการอ่านและเขียน เนื่องจากผู้เขียนต้องจำข้อมูลต่าง ๆ ของ Parameter เช่น ประเภทของ Parameter การเรียงลำดับ ดังนั้นการจำกัดจำนวน Parameter อาจจะช่วยให้สะดวกมากยิ่งขึ้น",
         "example": {
-        "error": "function createUser(name, age, email, role) {\n    return { name, age, email, role };\n}",
-        "fixed": "function createUser(name, age, email) {\n    return { name, age, email };\n}\n หรือใช้ object เป็น parameter แทน\n\nfunction createUser({ name, age, email, role }) {\n    return { name, age, email, role };\n } \n const user = createUser({\n    name: 'Alice',\n    age: 30,\n    email: 'alice@example.com',\n    role: 'admin'\n }); \n console.log(user);"
+            "error": "function createUser(name, age, email, role) {\n    return { name, age, email, role };\n}",
+            "fixed": "function createUser(name, age, email) {\n    return { name, age, email };\n}\n หรือใช้ object เป็น parameter แทน\n\nfunction createUser({ name, age, email, role }) {\n    return { name, age, email, role };\n } \n const user = createUser({\n    name: 'Alice',\n    age: 30,\n    email: 'alice@example.com',\n    role: 'admin'\n }); \n console.log(user);"
         }
     },
     {
@@ -21,16 +21,19 @@
         "description": "ในการสืบทอด class (extends) ต้องเรียก super() ก่อนใช้ this หรือ return ภายใน constructor ของ child class",
         "message": "Child class ต้องเรียก super() ก่อนใช้ this และก่อน return ใน constructor",
         "example": {
-        "error": "class Child extends Parent {\n  constructor() {\n    this.value = 42; // ผิดพลาด: ใช้ 'this' ก่อนเรียก 'super()'\n    super();\n  }\n}",
-        
-        "fixed": "class Child extends Parent {\n  constructor() {\n    super(); // เรียก 'super()' ก่อนใช้ 'this'\n    this.value = 42;\n  }\n}"
+            "error": "class Child extends Parent {\n  constructor() {\n    this.value = 42; // ผิดพลาด: ใช้ 'this' ก่อนเรียก 'super()'\n    super();\n  }\n}",
+            "fixed": "class Child extends Parent {\n  constructor() {\n    super(); // เรียก 'super()' ก่อนใช้ 'this'\n    this.value = 42;\n  }\n}"
         }
     },
     {
         "ruleId": "for-direction",
         "title": "เงื่อนไขการนับ Counter ใน for ไม่ถูกต้อง",
         "description": "บังคับให้เงื่อนไขคำสั่งของ for ในที่ถูกต้อง",
-        "message": "ใน for มีการกำหนดเงื่อนไขการนับ Counter ไม่ถูกต้อง เช่น var i = 0; i > 10; i++ "
+        "message": "ใน for มีการกำหนดเงื่อนไขการนับ Counter ไม่ถูกต้อง เช่น var i = 0; i > 10; i++ ",
+        "example": {
+            "error": "// arr.length = 6\nvar arr = [0, 5, 63, 5, 7, 8];\nfor (var i = 0; i > arr.length; i++) {\n  console.log(arr[i]);\n}",
+            "fixed": "// กำหนดเงื่อนไขใน forloop ใหม่\nfor (var i = 0; i < arr.length; i++) {\n  console.log(arr[i]);\n}"
+        }
     },
     {
         "ruleId": "getter-return",
@@ -261,10 +264,9 @@
         "description": "กฎนี้บังคับการใช้ซิโคลเมติกคอมเพล็กซิตี้สูงสุดที่อนุญาตในโปรแกรม ซิโคลเมติกคอมเพล็กซิตี้มีหน้าที่วัดจำนวนเส้นทางที่อิสระต่อกันผ่านโค้ดซอร์สของโปรแกรม",
         "message": "ความซับซ้อนของฟังก์ชันหรือเมทอดเกินเกินขอบเขตที่อนุญาต (default คือ 4)",
         "example": {
-        "error": "function foo() {\n  for (;;) {\n    while (true) {\n      if (true) {\n        if (true) {\n          if (true)\n        }\n       }\n      }\n    }\n  }\n}",
-        "fixed": "function foo() {\n  for (;;) {\n    while (true) {\n      if (true) {\n        if (true) {\n        }\n      }\n    }\n  }\n} \n //ลบ หรือ แยกฟังก์ชันย่อยออกมาเพื่อลดความซับซ้อน"
+            "error": "function foo() {\n  for (;;) {\n    while (true) {\n      if (true) {\n        if (true) {\n          if (true)\n        }\n       }\n      }\n    }\n  }\n}",
+            "fixed": "function foo() {\n  for (;;) {\n    while (true) {\n      if (true) {\n        if (true) {\n        }\n      }\n    }\n  }\n} \n //ลบ หรือ แยกฟังก์ชันย่อยออกมาเพื่อลดความซับซ้อน"
         }
-
     },
     {
         "ruleId": "consistent-return",
@@ -686,8 +688,8 @@
         "description": "ห้ามใช้การสร้างสตริงหลายบรรทัดโดยการใช้เครื่องหมาย '+' หรือการเขียนสตริงหลายบรรทัดในบรรทัดเดียว เนื่องจากมันอาจทำให้โค้ดยากต่อการอ่านและดูแลรักษา ควรใช้เทมเพลตลิตอรัล (template literals) ซึ่งช่วยให้การสร้างสตริงหลายบรรทัดชัดเจนและอ่านง่ายกว่า",
         "message": "ห้ามใช้การสร้างสตริงหลายบรรทัดโดยตรง",
         "example": {
-        "error": "const message = 'Hello' '\\' \n                'world!';",
-        "fixed": "const message = 'Hello ' +\n                'world!';"
+            "error": "const message = 'Hello' '\\' \n                'world!';",
+            "fixed": "const message = 'Hello ' +\n                'world!';"
         }
     },
     {
@@ -708,10 +710,9 @@
         "description": "ห้ามใช้ 'new' กับฟังก์ชันที่ไม่ได้เป็น constructor เนื่องจากมันอาจทำให้เกิดข้อผิดพลาดที่ไม่คาดคิด เพราะ 'new' จะพยายามสร้างอ็อบเจ็กต์จากฟังก์ชันที่อาจไม่ได้ออกแบบมาเพื่อการนี้ ควรใช้ 'new' กับฟังก์ชันที่เป็น constructor เท่านั้น",
         "message": "ห้ามใช้ 'new' กับฟังก์ชันที่ไม่ได้เป็น constructor",
         "example": {
-        "error": "new Date(); \nnew MyClass(); ",
-        "fixed": "const d = new Date(); \nconsole.log(d.toISOString());\nconst obj = new MyClass();\n"
+            "error": "new Date(); \nnew MyClass(); ",
+            "fixed": "const d = new Date(); \nconsole.log(d.toISOString());\nconst obj = new MyClass();\n"
         }
-
     },
     {
         "ruleId": "no-new-func",
@@ -719,8 +720,8 @@
         "description": "ห้ามใช้ 'new' กับฟังก์ชันที่เป็นฟังก์ชันทั่วไป (non-constructor functions) เพราะมันจะสร้างอ็อบเจ็กต์ที่ไม่จำเป็นและอาจทำให้โค้ดซับซ้อนและยากต่อการเข้าใจ ควรหลีกเลี่ยงการใช้ 'new' กับฟังก์ชันที่ไม่ใช่ constructor และใช้ฟังก์ชันตามปกติ",
         "message": "ห้ามใช้ 'new' กับฟังก์ชัน",
         "example": {
-        "error": "const sum = new Function('a', 'b', 'return a + b'); \nconsole.log(sum(2, 3));",
-        "fixed": "function sum(a, b) { \n  return a + b; \n}\nconsole.log(sum(2, 3));"
+            "error": "const sum = new Function('a', 'b', 'return a + b'); \nconsole.log(sum(2, 3));",
+            "fixed": "function sum(a, b) { \n  return a + b; \n}\nconsole.log(sum(2, 3));"
         }
     },
     {
@@ -729,8 +730,8 @@
         "description": "ห้ามใช้ 'new' กับ object เช่น 'new String()', 'new Number()', หรือ 'new Boolean()' เพราะมันจะสร้างอ็อบเจ็กต์แทนค่าพื้นฐานที่ไม่จำเป็น ซึ่งอาจทำให้โค้ดช้าลงและเกิดข้อผิดพลาดในการเปรียบเทียบ ควรใช้ค่าพื้นฐานโดยตรงแทนตัวห่อหุ้ม",
         "message": "ห้ามใช้ 'new' กับ object (wrapper objects)",
         "example": {
-        "error": "const s = new String('hello');\nconst n = new Number(42);\nconst b = new Boolean(true);",
-        "fixed": "const s = 'hello';\nconst n = 42;\nconst b = true;"
+            "error": "const s = new String('hello');\nconst n = new Number(42);\nconst b = new Boolean(true);",
+            "fixed": "const s = 'hello';\nconst n = 42;\nconst b = true;"
         }
     },
     {

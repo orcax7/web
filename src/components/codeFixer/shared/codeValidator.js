@@ -1,26 +1,4 @@
 import { parse } from "@babel/parser";
-/**
- * @fileoverview Code validation utilities for ensuring fix safety and correctness
- * Provides syntax and semantic validation for JavaScript code after applying fixes
- */
-
-/**
- * @typedef {Object} ValidationResult
- * @property {boolean} isValid - Whether the validation passed
- * @property {string} [error] - Error message if validation failed
- * @property {string[]} [warnings] - Optional warnings about the code
- * @property {Object} [details] - Additional validation details
- */
-
-/**
- * @typedef {Object} FixHistory
- * @property {string} ruleId - The rule that was fixed
- * @property {number} line - Line where fix was applied
- * @property {number} column - Column where fix was applied
- * @property {string} originalText - Original text before fix
- * @property {string} fixedText - Text after fix
- * @property {Date} timestamp - When the fix was applied
- */
 
 /**
  * Code validator for ensuring JavaScript code correctness after fixes
@@ -75,12 +53,6 @@ class CodeValidator {
     }
   }
 
-  /**
-   * Validate semantic correctness by comparing original and fixed code
-   * @param {string} originalCode - The original code before fixes
-   * @param {string} fixedCode - The code after applying fixes
-   * @returns {ValidationResult} Validation result
-   */
   validateSemantics(originalCode, fixedCode) {
     try {
       // First validate syntax of both versions
@@ -123,22 +95,11 @@ class CodeValidator {
     }
   }
 
-  /**
-   * Check if fixes can be reverted based on history
-   * @param {FixHistory[]} [history] - Fix history to check (defaults to internal history)
-   * @returns {boolean} True if fixes can be reverted
-   */
   canRevert(history = null) {
     const targetHistory = history || this.fixHistory;
     return targetHistory.length > 0;
   }
 
-  /**
-   * Revert the last fix applied to the code
-   * @param {string} code - The current code
-   * @param {FixHistory} lastFix - The last fix to revert
-   * @returns {string} Code with the last fix reverted
-   */
   revertLastFix(code, lastFix) {
     try {
       // Find the position of the fix in the current code
@@ -169,14 +130,6 @@ class CodeValidator {
     }
   }
 
-  /**
-   * Record a fix in the history
-   * @param {string} ruleId - The rule that was fixed
-   * @param {number} line - Line where fix was applied
-   * @param {number} column - Column where fix was applied
-   * @param {string} originalText - Original text before fix
-   * @param {string} fixedText - Text after fix
-   */
   recordFix(ruleId, line, column, originalText, fixedText) {
     const fixRecord = {
       ruleId,
@@ -195,21 +148,10 @@ class CodeValidator {
     }
   }
 
-  /**
-   * Create a snapshot of code for later comparison
-   * @param {string} code - The code to snapshot
-   * @param {string} snapshotId - Identifier for the snapshot
-   */
   createSnapshot(code, snapshotId) {
     this.codeSnapshots.set(snapshotId, code);
   }
 
-  /**
-   * Compare current code with a snapshot
-   * @param {string} currentCode - The current code
-   * @param {string} snapshotId - Identifier of the snapshot to compare with
-   * @returns {Object} Comparison result
-   */
   compareWithSnapshot(currentCode, snapshotId) {
     const snapshot = this.codeSnapshots.get(snapshotId);
 
@@ -225,12 +167,6 @@ class CodeValidator {
     };
   }
 
-  /**
-   * Check for common syntax issues
-   * @param {string} code - The code to check
-   * @returns {string[]} Array of syntax issue descriptions
-   * @private
-   */
   checkCommonSyntaxIssues(code) {
     const issues = [];
 
@@ -273,13 +209,6 @@ class CodeValidator {
     return issues;
   }
 
-  /**
-   * Check for semantic changes between original and fixed code
-   * @param {string} originalCode - Original code
-   * @param {string} fixedCode - Fixed code
-   * @returns {string[]} Array of semantic issue descriptions
-   * @private
-   */
   checkSemanticChanges(originalCode, fixedCode) {
     const issues = [];
 
@@ -306,10 +235,6 @@ class CodeValidator {
     return issues;
   }
 
-  /**
-   * Get validation statistics
-   * @returns {Object} Statistics about validations performed
-   */
   getStats() {
     return {
       fixHistorySize: this.fixHistory.length,
@@ -326,10 +251,6 @@ class CodeValidator {
     this.codeSnapshots.clear();
   }
 
-  /**
-   * Export fix history for debugging or analysis
-   * @returns {FixHistory[]} Copy of the fix history
-   */
   exportHistory() {
     return [...this.fixHistory];
   }

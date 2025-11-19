@@ -1,8 +1,3 @@
-/**
- * @fileoverview Fixer for brace-style ESLint rule
- * Enforces consistent brace placement (1tbs, allman, stroustrup styles)
- */
-
 import FixerBase from './shared/fixerBase.js';
 import ContextAnalyzer from './shared/contextAnalyzer.js';
 
@@ -16,12 +11,6 @@ class BraceStyleFixer extends FixerBase {
     this.contextAnalyzer = new ContextAnalyzer();
   }
 
-  /**
-   * Check if this fixer can handle the given error
-   * @param {string} code - The source code
-   * @param {ESLintError} error - The ESLint error to fix
-   * @returns {boolean} True if this fixer can handle the error
-   */
   canFix(code, error) {
     if (!super.canFix(code, error)) {
       return false;
@@ -32,24 +21,18 @@ class BraceStyleFixer extends FixerBase {
     return safeZone.isSafe;
   }
 
-  /**
-   * Apply the brace-style fix to the code
-   * @param {string} code - The source code to fix
-   * @param {ESLintError} error - The ESLint error to fix
-   * @returns {FixResult} The result of the fix operation
-   */
   fix(code, error) {
     try {
       const line = this.getLine(code, error.line);
       const absolutePos = this.getAbsolutePosition(code, error.line, error.column);
-      
+
       // Determine the brace style and fix type needed
       const fixInfo = this.determineFix(error.message, code, absolutePos);
-      
+
       if (!fixInfo) {
         return this.createFailureResult(code, 'Unable to determine brace-style fix type');
       }
-      
+
       switch (fixInfo.type) {
         case 'move-to-same-line':
           return this.moveBraceToSameLine(code, error, fixInfo);
@@ -60,33 +43,25 @@ class BraceStyleFixer extends FixerBase {
         default:
           return this.createFailureResult(code, `Unknown fix type: ${fixInfo.type}`);
       }
-      
+
     } catch (error) {
       return this.handleError(error, code, 'brace-style fix');
     }
   }
 
-  /**
-   * Determine the type of brace style fix needed
-   * @param {string} message - ESLint error message
-   * @param {string} code - The source code
-   * @param {number} absolutePos - Absolute position in code
-   * @returns {Object|null} Fix information object
-   * @private
-   */
   determineFix(message, code, absolutePos) {
     const bracePos = this.findBracePosition(code, absolutePos);
-    
+
     if (bracePos === -1) {
       return null;
     }
-    
+
     const fixInfo = {
       bracePos,
       type: null,
       style: this.detectBraceStyle(message)
     };
-    
+
     if (message.includes('Opening curly brace does not appear on the same line')) {
       fixInfo.type = 'move-to-same-line';
     } else if (message.includes('Opening curly brace appears on the same line')) {
@@ -96,16 +71,10 @@ class BraceStyleFixer extends FixerBase {
     } else if (message.includes('Statement inside of curly braces should be on next line')) {
       fixInfo.type = 'move-to-new-line';
     }
-    
+
     return fixInfo.type ? fixInfo : null;
   }
 
-  /**
-   * Detect the brace style from error message
-   * @param {string} message - ESLint error message
-   * @returns {string} The brace style (1tbs, allman, stroustrup)
-   * @private
-   */
   detectBraceStyle(message) {
     if (message.includes('1tbs') || message.includes('same line')) {
       return '1tbs';
@@ -114,158 +83,120 @@ class BraceStyleFixer extends FixerBase {
     } else if (message.includes('stroustrup')) {
       return 'stroustrup';
     }
-    
+
     // Default to 1tbs if can't determine
     return '1tbs';
   }
 
-  /**
-   * Move opening brace to the same line
-   * @param {string} code - The source code
-   * @param {ESLintError} error - The ESLint error
-   * @param {Object} fixInfo - Fix information
-   * @returns {FixResult} The result of the fix operation
-   * @private
-   */
   moveBraceToSameLine(code, error, fixInfo) {
     const bracePos = fixInfo.bracePos;
-    
+
     // Find the end of the previous line
     let prevLineEnd = bracePos - 1;
     while (prevLineEnd >= 0 && code[prevLineEnd] !== '\n') {
       prevLineEnd--;
     }
-    
+
     if (prevLineEnd < 0) {
       return this.createFailureResult(code, 'Could not find previous line');
     }
-    
+
     // Find the start of the line containing the brace
     let braceLineStart = bracePos;
     while (braceLineStart > 0 && code[braceLineStart - 1] !== '\n') {
       braceLineStart--;
     }
-    
+
     // Extract the indentation before the brace
     let indentEnd = braceLineStart;
     while (indentEnd < bracePos && /\s/.test(code[indentEnd])) {
       indentEnd++;
     }
-    
+
     // Replace the newline and indentation with a single space
     const fixedCode = this.safeReplace(code, prevLineEnd, indentEnd, ' ');
-    
+
     if (!this.validate(code, fixedCode)) {
       return this.createFailureResult(code, 'Fix validation failed');
     }
-    
+
     return this.createSuccessResult(fixedCode, 'Moved opening brace to same line');
   }
 
-  /**
-   * Move opening brace to a new line
-   * @param {string} code - The source code
-   * @param {ESLintError} error - The ESLint error
-   * @param {Object} fixInfo - Fix information
-   * @returns {FixResult} The result of the fix operation
-   * @private
-   */
   moveBraceToNewLine(code, error, fixInfo) {
     const bracePos = fixInfo.bracePos;
-    
+
     // Find the position before the brace (skip any spaces)
     let insertPos = bracePos;
     while (insertPos > 0 && code[insertPos - 1] === ' ') {
       insertPos--;
     }
-    
+
     // Determine the indentation level
     const indentation = this.getIndentationForBrace(code, bracePos);
-    
+
     // Insert newline and indentation before the brace
     const replacement = '\n' + indentation;
     const fixedCode = this.safeReplace(code, insertPos, bracePos, replacement + '{');
-    
+
     if (!this.validate(code, fixedCode)) {
       return this.createFailureResult(code, 'Fix validation failed');
     }
-    
+
     return this.createSuccessResult(fixedCode, 'Moved opening brace to new line');
   }
 
-  /**
-   * Fix else brace style (for stroustrup style)
-   * @param {string} code - The source code
-   * @param {ESLintError} error - The ESLint error
-   * @param {Object} fixInfo - Fix information
-   * @returns {FixResult} The result of the fix operation
-   * @private
-   */
   fixElseBraceStyle(code, error, fixInfo) {
     // This handles cases where } else { should be on the same line
     const line = this.getLine(code, error.line);
     const lineStart = this.getAbsolutePosition(code, error.line, 1);
-    
+
     // Look for the pattern of closing brace followed by else
     const elseMatch = line.match(/^(\s*)}(\s*)(else)/);
-    
+
     if (!elseMatch) {
       return this.createFailureResult(code, 'Could not find else pattern to fix');
     }
-    
+
     const indentation = elseMatch[1];
     const replacement = indentation + '} else';
-    
+
     // Replace the entire line with the corrected version
     const lineEnd = lineStart + line.length;
     const fixedCode = this.safeReplace(code, lineStart, lineEnd, replacement);
-    
+
     if (!this.validate(code, fixedCode)) {
       return this.createFailureResult(code, 'Fix validation failed');
     }
-    
+
     return this.createSuccessResult(fixedCode, 'Fixed else brace style');
   }
 
-  /**
-   * Find the position of the brace near the error position
-   * @param {string} code - The source code
-   * @param {number} absolutePos - Absolute position to search around
-   * @returns {number} Position of brace, or -1 if not found
-   * @private
-   */
   findBracePosition(code, absolutePos) {
     // Search in a window around the error position
     const searchStart = Math.max(0, absolutePos - 30);
     const searchEnd = Math.min(code.length, absolutePos + 30);
-    
+
     for (let i = searchStart; i < searchEnd; i++) {
       if (code[i] === '{' || code[i] === '}') {
         // Verify this brace is in a safe context
-        if (!this.contextAnalyzer.isInString(code, i) && 
-            !this.contextAnalyzer.isInComment(code, i)) {
+        if (!this.contextAnalyzer.isInString(code, i) &&
+          !this.contextAnalyzer.isInComment(code, i)) {
           return i;
         }
       }
     }
-    
+
     return -1;
   }
 
-  /**
-   * Get the appropriate indentation for a brace
-   * @param {string} code - The source code
-   * @param {number} bracePos - Position of the brace
-   * @returns {string} The indentation string
-   * @private
-   */
   getIndentationForBrace(code, bracePos) {
     // Find the line that contains the control structure
     let lineStart = bracePos;
     while (lineStart > 0 && code[lineStart - 1] !== '\n') {
       lineStart--;
     }
-    
+
     // Move to previous line to find the control structure
     if (lineStart > 0) {
       lineStart--; // Move past the newline
@@ -273,46 +204,40 @@ class BraceStyleFixer extends FixerBase {
         lineStart--;
       }
     }
-    
+
     // Extract indentation from the control structure line
     let indentEnd = lineStart;
     while (indentEnd < code.length && /[ \t]/.test(code[indentEnd])) {
       indentEnd++;
     }
-    
+
     return code.slice(lineStart, indentEnd);
   }
 
-  /**
-   * Enhanced validation for brace-style fixes
-   * @param {string} originalCode - The original code before fixing
-   * @param {string} fixedCode - The code after applying the fix
-   * @returns {boolean} True if the fix is valid
-   */
   validate(originalCode, fixedCode) {
     if (!super.validate(originalCode, fixedCode)) {
       return false;
     }
-    
+
     try {
       // Check that brace counts remain the same
       const originalOpenBraces = (originalCode.match(/{/g) || []).length;
       const originalCloseBraces = (originalCode.match(/}/g) || []).length;
       const fixedOpenBraces = (fixedCode.match(/{/g) || []).length;
       const fixedCloseBraces = (fixedCode.match(/}/g) || []).length;
-      
-      if (originalOpenBraces !== fixedOpenBraces || 
-          originalCloseBraces !== fixedCloseBraces) {
+
+      if (originalOpenBraces !== fixedOpenBraces ||
+        originalCloseBraces !== fixedCloseBraces) {
         return false;
       }
-      
+
       // Ensure we didn't create malformed brace patterns
       if (fixedCode.includes('{{') || fixedCode.includes('}}')) {
         return false;
       }
-      
+
       return true;
-      
+
     } catch (error) {
       return false;
     }
