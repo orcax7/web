@@ -237,7 +237,8 @@ const FileUpload = () => {
 
     try {
       const response = await axios.post(
-        "https://server-yhjj.onrender.com/lint",
+        "http://localhost:3001/lint",
+        // "https://server-yhjj.onrender.com/lint",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -245,7 +246,7 @@ const FileUpload = () => {
       );
 
       storeLintResult(response.data);
-      console.log(response.data); 
+      console.log(response.data);
 
       for (const message of response.data.lintResult.messages) {
         message.ruleId = message.ruleId?.replace(/^@typescript-eslint\//, "") || "(no rule)";
@@ -689,6 +690,22 @@ const FileUpload = () => {
                                   <li key={i}>{sol}</li>
                                 ))}
                               </ul>
+                            )}
+                            {ruleDetails.example && (
+                              <div className="example-section">
+                                <div className="example-block">
+                                  <strong className="example-label error-label">ตัวอย่างโค้ดที่ผิด:</strong>
+                                  <pre className="example-code error-code">
+                                    <code>{ruleDetails.example.error}</code>
+                                  </pre>
+                                </div>
+                                <div className="example-block">
+                                  <strong className="example-label fixed-label">ตัวอย่างโค้ดที่ถูกต้อง:</strong>
+                                  <pre className="example-code fixed-code">
+                                    <code>{ruleDetails.example.fixed}</code>
+                                  </pre>
+                                </div>
+                              </div>
                             )}
                             <div className="text-right">ref: {idx}</div>
                           </>

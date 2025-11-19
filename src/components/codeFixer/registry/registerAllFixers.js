@@ -17,6 +17,7 @@ import { SpaceBeforeBlocksFixer } from '../spaceBeforeBlocks.js';
 import { NoPlusPlusFixer } from '../noPlusplus.js';
 import { PreferTemplateFixer } from '../preferTemplate.js';
 import { PreferForOfFixer } from '../preferForOf.js';
+import { NoTernaryFixer } from '../noTernary.js';
 
 /**
  * Register all available fixers with the registry
@@ -38,6 +39,7 @@ export function registerAllFixers() {
     fixerRegistry.register(new NoPlusPlusFixer());
     fixerRegistry.register(new PreferTemplateFixer());
     fixerRegistry.register(new PreferForOfFixer());
+    fixerRegistry.register(new NoTernaryFixer());
 
     // Log all registered fixers
     const registeredRules = fixerRegistry.getFixableRules();
@@ -67,7 +69,8 @@ export function getRegisteredFixerRuleIds() {
     'space-before-blocks',
     'no-plusplus',
     'prefer-template',
-    'prefer-for-of'
+    'prefer-for-of',
+    'no-ternary'
   ];
 }
 
